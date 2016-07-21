@@ -8,7 +8,7 @@ var errorhandler = require('errorhandler');
 var Promise = require('promise');
 
 var data = Data({
-  repo: "."
+  repo: "/Users/sam/Projects/dataClone"
 });
 
 sockateer( {
@@ -24,7 +24,31 @@ app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/borrow', function(req, res) {
+
+app.get('/clone', function(req, res) {
+  data.clone("/Users/sam/Projects/data");
+  res.json({status: "ok"});
+});
+
+app.get('/push', function(req, res) {
+  data.push(["refs/heads/master:refs/heads/master"], "sam");
+  res.json({status : "ok"});
+});
+
+app.get('/pull', function(req, res) {
+  data.pull();
+  res.json({status : "ok"});
+});
+
+app.get('/update', function(req, res) {
+  user = { name: 'Sam Hamilton', email: 'samilton@gmail.com' };
+  filePath = "sam.txt";
+  fileContents = new Date();
+  commitId = data.commit(user, filePath, fileContents, "testing");
+  res.json(commitId);
+});
+
+app.get('/history', function(req, res) {
   Promise.resolve(data.getHistory()).then(function(results) { 
       var commits = []; 
 
